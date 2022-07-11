@@ -1,6 +1,7 @@
-
+# 开一个node的image 在`/app/`下用`npm run build`得到`/app/dist/` 可以用于直接部署
 FROM node:10.23-alpine AS vuebuild
-LABEL maintainer="libreliu@foxmail.com"
+LABEL maintainer_name="Yang-Xijie"
+LABEL maintainer_email="564197835@qq.com"
 
 WORKDIR /app
 COPY ./ /app
@@ -21,6 +22,7 @@ RUN test ${DELETE_NPM_LOCK} = yes \
        (echo 'Skipping NPM mirror replacement' && npm install .) \
     && npm run build
 
+# 再开一个nginx的image 将当前目录下的nginx-frontend.conf复制到nginx的配置文件夹下 这样就开始监听端对应口了
 FROM nginx:stable-alpine
 
 COPY nginx-site.conf /etc/nginx/conf.d/default.conf

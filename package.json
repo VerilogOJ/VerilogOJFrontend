@@ -1,9 +1,12 @@
 {
-  "name": "OJfrontend",
+  "name": "verilogojfrontend",
   "version": "1.0.0",
   "private": true,
   "description": "frontend of VerilogOJ",
   "author": "libreliu <libreliu@foxmail.com>",
+  "maintainers": [
+    "Yang-Xijie <564197835@qq.com>"
+  ],
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",

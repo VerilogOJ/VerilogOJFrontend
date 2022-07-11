@@ -28,3 +28,8 @@ npm run serve
     - `git pull && sudo docker-compose up --detach --build`
         - `--build` Build images before starting containers. 重新构建依赖的images
         - `--detach` Detached mode: Run containers in the background, print new container names.
+
+成功部署的话
+
+- 访问<http://166.111.223.67:80/>即可看到网页
+- `sudo docker ps` 可以看到有image为`verilogojfrontend_web`的镜像在跑

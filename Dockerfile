@@ -25,5 +25,6 @@ RUN test ${DELETE_NPM_LOCK} = yes \
 # 再开一个nginx的image 将当前目录下的nginx-frontend.conf复制到nginx的配置文件夹下 这样就开始监听端对应口了
 FROM nginx:stable-alpine
 
-COPY nginx-site.conf /etc/nginx/conf.d/default.conf
+COPY nginx-frontend.conf /etc/nginx/conf.d/default.conf
+# 拷贝到的路径需要和nginx-frontend.conf中的root一致
 COPY --from=vuebuild /app/dist/ /usr/share/nginx/html/

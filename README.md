@@ -1,6 +1,13 @@
 # Verilog OJ 前端
 
+> 以`Ubuntu server 20.04`为例
+
 ## 开发
+
+```sh
+sudo apt update && sudo apt upgrade # once
+sudo apt install nodejs npm # once
+```
 
 ```sh
 git clone git@git.tsinghua.edu.cn:eeverilogoj/verilogojfrontend.git
@@ -35,7 +42,12 @@ npm run serve
         - `--build` Build images before starting containers. 重新构建依赖的images
         - `--detach` Detached mode: Run containers in the background, print new container names.
 
-成功部署的话
+### 成功部署
 
 - 访问<http://166.111.223.67:80/>即可看到网页
 - `sudo docker ps` 可以看到有image为`verilogojfrontend_web`的容器在跑
+
+## Open Source Projects
+
+- [YAVGroup/Verilog-OJ](https://github.com/YAVGroup/Verilog-OJ) [AGPL-3.0 license](https://github.com/YAVGroup/Verilog-OJ/blob/master/LICENSE)
+- [libreliu/pyDigitalWaveTools](https://github.com/libreliu/pyDigitalWaveTools) [MIT license](https://github.com/libreliu/pyDigitalWaveTools/blob/master/LICENSE)

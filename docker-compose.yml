@@ -1,0 +1,12 @@
+version: "3.7"
+
+services:
+  # public port 80, the only port exposed
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        USE_NPM_MIRROR: "yes"
+    ports:
+      - "80:80"

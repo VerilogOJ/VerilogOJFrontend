@@ -3,7 +3,8 @@
 ## 开发
 
 ```sh
-cd frontend
+git clone git@git.tsinghua.edu.cn:eeverilogoj/verilogojfrontend.git
+cd verilogojfrontend
 ```
 
 ```sh
@@ -18,7 +19,13 @@ npm run serve
 
 前端界面通过 `http://localhost:8080/` 访问
 
-## 部署
+## 生产
+
+### 设置
+
+在`nginx-frontend.conf`中 `location ^~ /oj/api/`字段 `proxy_pass`处填写后端的api路径
+
+### 部署
 
 - 第一次部署
     - `sudo docker-compose up --detach`
@@ -31,4 +38,4 @@ npm run serve
 成功部署的话
 
 - 访问<http://166.111.223.67:80/>即可看到网页
-- `sudo docker ps` 可以看到有image为`verilogojfrontend_web`的镜像在跑
+- `sudo docker ps` 可以看到有image为`verilogojfrontend_web`的容器在跑

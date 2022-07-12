@@ -106,7 +106,7 @@
               @submit="submit"
               @clear="code = template_code"
             >
-              <cm :code_="code"></cm>
+              <cm :code_="code" @codechange="x => code=x"></cm>
               </submitcard>
           </el-row>
         </el-col>

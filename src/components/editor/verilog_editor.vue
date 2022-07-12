@@ -38,9 +38,8 @@ require("codemirror/addon/edit/matchbrackets");
 
 export default {
   name: 'verilog_editor',
-  props: {
-    code_: String
-  },
+  props: 
+    ["code_"],
   components: {
       codemirror,
   },
@@ -57,6 +56,14 @@ export default {
         lineNumbers: true,
         matchBrackets: true,
       },
+    }
+  },
+  watch: {
+    code_: {
+      handler(val) {
+        console.log('1');
+        this.codeInner = val;
+      }
     }
   },
   methods: {
@@ -76,7 +83,7 @@ export default {
       if (re.test(c) && this.$refs.mymir.codemirror.state.focused &&
         !this.$refs.mymir.codemirror.state.completionActive)
           this.$refs.mymir.codemirror.showHint({ completeSingle: false });
-      
+      this.$emit("codechange", this.codeInner);
     },
     onSliderChange(msg, event) {
       this.cmHeight = msg+'px';

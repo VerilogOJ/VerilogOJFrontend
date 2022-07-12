@@ -55,9 +55,9 @@ class Treenode {
           this.insertNode(child,str.substring(1));
         }else{
             if(str.length==1){
-              var child = new Treenode(str[0],true);
+              child = new Treenode(str[0],true);
             }else{
-              var child = new Treenode(str[0],false)
+              child = new Treenode(str[0],false)
             }
             node.children.push(child);
             this.insertNode(child,str.substring(1));
@@ -71,7 +71,8 @@ class Treenode {
             return [false, null];
         }
         var cur = this.root;
-        for (var i = 0; i < txt.length; i++) {
+        
+        for (var i = 0; i < txt.length; i++) {  
             var child = cur.children.find(function (child) {
                 return child.key == txt[i];
             });

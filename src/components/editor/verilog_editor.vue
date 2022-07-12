@@ -9,7 +9,7 @@
             <div class="grid-content bg-purple"></div></el-col>
         </el-row>
          
-        <codemirror v-model="code" @input="onCmCodeChange" :options="cmOptions" ref="mymir" 
+        <codemirror v-model="code_" @input="onCmCodeChange" :options="cmOptions" ref="mymir" 
             :style="{'--cmHeight':cmHeight}">
         </codemirror>
         
@@ -77,7 +77,7 @@ export default {
       console.log(c);
       if(re.test(c) && !this.$refs.mymir.codemirror.state.completionActive)
           this.$refs.mymir.codemirror.showHint({ completeSingle: false });
-
+      
     },
     onSliderChange(msg, event) {
       this.cmHeight = msg+'px';

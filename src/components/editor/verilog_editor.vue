@@ -73,9 +73,8 @@ export default {
       } else {
         c = ' ';
       }
-      //console.log(this.$refs.mymir.codemirror.state.completionActive);
-      console.log(c);
-      if(re.test(c) && !this.$refs.mymir.codemirror.state.completionActive)
+      if (re.test(c) && this.$refs.mymir.codemirror.state.focused &&
+        !this.$refs.mymir.codemirror.state.completionActive)
           this.$refs.mymir.codemirror.showHint({ completeSingle: false });
       
     },

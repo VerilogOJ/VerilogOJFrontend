@@ -61,7 +61,6 @@ export default {
   watch: {
     code_: {
       handler(val) {
-        console.log('1');
         this.codeInner = val;
       }
     }

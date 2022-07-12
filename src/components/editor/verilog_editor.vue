@@ -9,7 +9,7 @@
             <div class="grid-content bg-purple"></div></el-col>
         </el-row>
          
-        <codemirror v-model="code_" @input="onCmCodeChange" :options="cmOptions" ref="mymir" 
+        <codemirror v-model="codeInner" @input="onCmCodeChange" :options="cmOptions" ref="mymir" 
             :style="{'--cmHeight':cmHeight}">
         </codemirror>
         
@@ -46,7 +46,7 @@ export default {
   },
   data() {
     return {    
-      code: "",
+      codeInner: this.code_,
       editorHeight: 0,
       cmHeight: "1000px",
       cmOptions: {

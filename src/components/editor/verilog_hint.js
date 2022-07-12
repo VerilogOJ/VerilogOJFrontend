@@ -50,7 +50,6 @@ import { keyword_tree } from "./keywords";
       list.sort(function (a, b) {
         return a.length > b.length ? 1 : -1;
       })
-      console.log(list);
       return {list: list, from: CodeMirror.Pos(cur.line, start), to: CodeMirror.Pos(cur.line, end)};
     });
   });

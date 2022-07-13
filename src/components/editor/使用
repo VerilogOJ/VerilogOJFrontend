@@ -1,0 +1,3 @@
+<cm></cm>
+
+import cm from "./components/editor/verilog_editor";

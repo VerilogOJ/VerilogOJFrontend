@@ -106,8 +106,8 @@
               @submit="submit"
               @clear="code = template_code"
             >
-              <codemirror v-model="code" :options="cmOptions"></codemirror
-            ></submitcard>
+              <cm :code_="code" @codechange="x => code=x"></cm>
+              </submitcard>
           </el-row>
         </el-col>
         <!--侧栏-->
@@ -262,21 +262,12 @@
   </div>
 </template>
 
-<style scope>
-.CodeMirror {
-  height: 500px;
-}
-</style>
+
 <script>
 import moment from "moment";
-import { codemirror } from "vue-codemirror";
 // import statusmini from "@/components/utils/statusmini";
 // import prostatistice from "@/components/utils/prostatistice";
-require("codemirror/lib/codemirror.css");
-require("codemirror/theme/base16-light.css");
-require("codemirror/theme/base16-dark.css");
 
-require("codemirror/mode/verilog/verilog");
 
 import submitcard from "@/components/utils/submitcard";
 import wavedrom from "@/components/utils/wavedrom";
@@ -284,14 +275,16 @@ import markdownIt from "@/components/utils/markdownIt";
 import userhyperlink from "@/components/utils/userhyperlink";
 import taglist from "@/components/utils/taglist";
 
+import cm from "@/components/editor/verilog_editor";
+
 import { mapState } from "vuex";
 import { prettyDate } from "@/utils/timeUtil";
 
 export default {
   name: "problemdetail",
   components: {
+    cm,
     submitcard,
-    codemirror,
     // statusmini,
     // prostatistice,
     wavedrom,
@@ -301,13 +294,6 @@ export default {
   },
   data() {
     return {
-      cmOptions: {
-        tabSize: 4,
-        indentUnit: 4,
-        mode: "verilog",
-        theme: "base16-light",
-        lineNumbers: true,
-      },
       title: "",
       des: "",
       input: "",

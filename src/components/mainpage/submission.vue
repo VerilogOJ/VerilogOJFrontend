@@ -1,5 +1,6 @@
 <template>
   <div>
+    
     <el-row> &nbsp; </el-row>
     <el-row>
       <el-col :xs="0" :sm="2" :md="4" :lg="6" :xl="6" class="placeholder">
@@ -83,9 +84,17 @@
             </el-collapse-item>
           </el-collapse>
         </el-row>
+        <el-row> 
+          <p> 逻辑电路图： </p>
+          <p v-html="svg"> </p>
+        </el-row>
+
+
         <el-row v-if="!loggedIn">
           <el-alert type="info" show-icon title="登录以查看代码！"></el-alert>
         </el-row>
+
+        
         <el-row v-else-if="!hasPermission">
           <el-alert
             type="warning"
@@ -189,6 +198,9 @@ export default {
           this.status = response.data.result;
           this.score = response.data.total_grade;
           this.total_score = response.data.problem_belong.total_grade;
+          this.svg = response.data.results[0].logic_circuit_data;
+      
+          // console.log(this.svg);
           this.num_testcase = this.results.length;
           this.related_testcases = response.data.problem_belong.testcases;
           this.submit_time = new Date(response.data.submit_time);
@@ -260,7 +272,7 @@ export default {
       submit_time: new Date(),
       related_testcases: [],
       subm_userid: "",
-
+      svg: "",
       autoRefresh: false,
     };
   },

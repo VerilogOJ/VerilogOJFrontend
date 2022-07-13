@@ -1,6 +1,5 @@
 <template>
   <div>
-    
     <el-row> &nbsp; </el-row>
     <el-row>
       <el-col :xs="0" :sm="2" :md="4" :lg="6" :xl="6" class="placeholder">
@@ -12,6 +11,7 @@
           <i class="el-icon-info"></i>
           提交结果
         </el-row>
+        
         <el-row>
           <el-card shadow="never">
             <el-row>
@@ -29,6 +29,43 @@
             </el-row>
           </el-card>
         </el-row>
+        <el-row v-if="!loggedIn">
+          <el-alert type="info" show-icon title="登录以查看代码！"></el-alert>
+        </el-row>
+        <el-row v-else-if="!hasPermission">
+          <el-alert
+            type="warning"
+            show-icon
+            title="您只能查看和下载自己的代码！"
+          ></el-alert>
+        </el-row>
+        <el-row v-else>
+          <!-- 代码显示 -->
+          <el-alert title="Code：" type="info" :closable="false">
+            <el-button
+              size="mini"
+              v-clipboard:copy="code"
+              v-clipboard:success="onCopy"
+              v-clipboard:error="onError"
+              >Copy</el-button
+            >
+            <el-button size="mini" @click="downloadFile(submissionid, code)"
+              >Download</el-button
+            >
+          </el-alert>
+
+          <codemirror
+            id="mycode"
+            v-model="code"
+            :options="cmOptions"
+          ></codemirror>
+        </el-row>
+        <el-row> 
+          <p> 逻辑电路图： </p>
+          <p v-html="svg"> </p>
+        </el-row>
+
+
         <el-row v-if="!loggedIn">
           <el-alert
             type="info"
@@ -62,9 +99,17 @@
                 </el-col>
               </template>
               <el-card shadow="never">
+                <h3>波形</h3>
+                <wavedrom
+                  :waveId="String(10 + index)"
+                  :parentText="result.app_data"
+                  errorMessage="Sorry, no waveform available."
+                ></wavedrom>
                 <h3>日志</h3>
                 <p
                   style="
+                    height: 300px;
+                    overflow-y: auto;
                     white-space: pre-wrap;
                     margin-left: 15px;
                     word-wrap: break-word;
@@ -73,56 +118,13 @@
                 >
                   {{ result.log }}
                 </p>
-
-                <h3>波形</h3>
-                <wavedrom
-                  :waveId="String(10 + index)"
-                  :parentText="result.app_data"
-                  errorMessage="Sorry, no waveform available."
-                ></wavedrom>
               </el-card>
             </el-collapse-item>
           </el-collapse>
         </el-row>
-        <el-row> 
-          <p> 逻辑电路图： </p>
-          <p v-html="svg"> </p>
-        </el-row>
-
-
-        <el-row v-if="!loggedIn">
-          <el-alert type="info" show-icon title="登录以查看代码！"></el-alert>
-        </el-row>
+        
 
         
-        <el-row v-else-if="!hasPermission">
-          <el-alert
-            type="warning"
-            show-icon
-            title="您只能查看和下载自己的代码！"
-          ></el-alert>
-        </el-row>
-        <el-row v-else>
-          <!-- 代码显示 -->
-          <el-alert title="Code：" type="info" :closable="false">
-            <el-button
-              size="mini"
-              v-clipboard:copy="code"
-              v-clipboard:success="onCopy"
-              v-clipboard:error="onError"
-              >Copy</el-button
-            >
-            <el-button size="mini" @click="downloadFile(submissionid, code)"
-              >Download</el-button
-            >
-          </el-alert>
-
-          <codemirror
-            id="mycode"
-            v-model="code"
-            :options="cmOptions"
-          ></codemirror>
-        </el-row>
       </el-col>
     </el-row>
   </div>

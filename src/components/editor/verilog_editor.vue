@@ -4,7 +4,7 @@
             <el-col :span="6" :offset="15">
                 <div class="block">
                     <span class="demonstration">编辑器高度</span>
-                    <el-slider v-model="editorHeight" :min="100" :max="500" :show-tooltip="false" @change="onSliderChange"> </el-slider>
+                    <el-slider v-model="editorHeight" :min="100" :max="700" :show-tooltip="false" @change="onSliderChange"> </el-slider>
                  </div>
             <div class="grid-content bg-purple"></div></el-col>
         </el-row>
@@ -46,8 +46,8 @@ export default {
   data() {
     return {    
       codeInner: this.code_,
-      editorHeight: 0,
-      cmHeight: "1000px",
+      editorHeight: 400,
+      cmHeight: "400px",
       cmOptions: {
         tabSize: 4,
         indentUnit: 4,

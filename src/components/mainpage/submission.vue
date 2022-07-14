@@ -62,10 +62,12 @@
         </el-row>
         <el-row> 
           <p> 逻辑电路图： </p>
-          <p v-html="svg"> </p>
+          <p v-html="svg_logic"> </p>
         </el-row>
-
-
+        <el-row> 
+          <p> fpga电路图： </p>
+          <p v-html="svg_mapping"> </p>
+        </el-row>
         <el-row v-if="!loggedIn">
           <el-alert
             type="info"
@@ -200,8 +202,8 @@ export default {
           this.status = response.data.result;
           this.score = response.data.total_grade;
           this.total_score = response.data.problem_belong.total_grade;
-          this.svg = response.data.results[0].logic_circuit_data;
-      
+          this.svg_logic = response.data.results[0].logic_circuit_data;
+          this.svg_mapping = response.data.results[0].circuit_diagram_data
           // console.log(this.svg);
           this.num_testcase = this.results.length;
           this.related_testcases = response.data.problem_belong.testcases;
@@ -274,7 +276,8 @@ export default {
       submit_time: new Date(),
       related_testcases: [],
       subm_userid: "",
-      svg: "",
+      svg_logic: "",
+      svg_mapping: "",
       autoRefresh: false,
     };
   },

@@ -9,7 +9,7 @@
             <div class="grid-content bg-purple"></div></el-col>
         </el-row>
          
-        <codemirror v-model="codeInner" @input="onCmCodeChange" :options="cmOptions" ref="mymir" 
+        <codemirror v-model="codeInner" @change="onCmCodeChange" :options="cmOptions" ref="mymir" 
             :style="{'--cmHeight':cmHeight}">
         </codemirror>
         

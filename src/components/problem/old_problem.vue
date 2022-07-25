@@ -573,6 +573,7 @@ export default {
           return this.$axios.post("/files/", formData);
         })
         .then((response) => {
+          console.log("old_problem.vue");
           const fileid = response.data.id;
           return this.$axios.post("/submit", {
             problem: this.id,

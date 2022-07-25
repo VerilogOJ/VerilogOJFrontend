@@ -80,8 +80,8 @@
                 <div class="problem-descriptions">{{ output }}</div>
               </el-row>
 
-              <!--这里放样例波形图-->
-              <el-row :gutter="18" class="problem-description-title"
+              <!-- 这里放样例波形图 -->
+              <!-- <el-row :gutter="18" class="problem-description-title"
                 >示例波形</el-row
               >
               <el-row
@@ -94,7 +94,7 @@
                   :parentText="waveform"
                   errorMessage="Sorry, no sample waveform available"
                 ></wavedrom>
-              </el-row>
+              </el-row> -->
             </el-card>
           </el-row>
 
@@ -106,8 +106,8 @@
               @submit="submit"
               @clear="code = template_code"
             >
-              <cm :code_="code" @codechange="x => code=x"></cm>
-              </submitcard>
+              <cm :code_="code" @codechange="(x) => (code = x)"></cm>
+            </submitcard>
           </el-row>
         </el-col>
         <!--侧栏-->
@@ -262,12 +262,10 @@
   </div>
 </template>
 
-
 <script>
 import moment from "moment";
 // import statusmini from "@/components/utils/statusmini";
 // import prostatistice from "@/components/utils/prostatistice";
-
 
 import submitcard from "@/components/utils/submitcard";
 import wavedrom from "@/components/utils/wavedrom";
@@ -287,7 +285,7 @@ export default {
     submitcard,
     // statusmini,
     // prostatistice,
-    wavedrom,
+    // wavedrom,
     userhyperlink,
     taglist,
     markdownIt,
@@ -556,7 +554,8 @@ export default {
         this.$message.error("请输入代码！");
         return;
       }
-
+      
+      
       this.$confirm("确定提交吗？", "提交", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
@@ -574,9 +573,10 @@ export default {
         })
         .then((response) => {
           const fileid = response.data.id;
+          // 再实际提交
           return this.$axios.post("/submit", {
             problem: this.id,
-            submit_files: [fileid],
+            submit_file: fileid,
           });
         })
         .then((response) => {

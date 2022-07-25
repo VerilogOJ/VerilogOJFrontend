@@ -567,6 +567,7 @@ export default {
             message: "提交中...",
           });
           console.log("problemdetail.vue");
+          console.log(this.code);
           // 先上传文件
           var formData = new FormData();
           var blob = new Blob([this.code], { type: "text/plain" });

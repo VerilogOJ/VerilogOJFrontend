@@ -26,6 +26,10 @@ npm run serve
 
 前端界面通过 `http://localhost:8080/` 访问
 
+### 前后端联调
+
+后端开启之后，确定后端API的路径（如<http://127.0.0.1:8000/oj/api>或<http://166.111.223.67:40000/oj/api>），修改`vue.config.js`中的`devServer.proxy.target`为后端API路径。启动项目之后即可连接后端。
+
 ## 生产
 
 ### 设置

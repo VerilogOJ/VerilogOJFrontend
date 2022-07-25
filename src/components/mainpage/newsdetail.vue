@@ -12,9 +12,7 @@
         </el-row>
 
         <el-row>
-          <div style="white-space: pre-wrap">
             {{ newsContent }}
-          </div>
         </el-row>
       </el-col>
     </el-row>

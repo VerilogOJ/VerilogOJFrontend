@@ -112,7 +112,6 @@
                   style="
                     height: 300px;
                     overflow-y: auto;
-                    white-space: pre-wrap;
                     margin-left: 15px;
                     word-wrap: break-word;
                     word-break: normal;
@@ -222,10 +221,11 @@ export default {
 
           if (this.loggedIn && this.hasPermission) {
             // TODO: support for multiple files
-            this.$axios
-              .get("/files/" + response.data.submit_files[0] + "/")
+            // console.log(response.data)
+            this.$axios.get("/files")
               .then((response) => {
-                // console.log(response.data);
+
+                //console.log(response.data);
                 this.code = response.data;
               })
               .catch();

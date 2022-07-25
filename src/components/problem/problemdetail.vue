@@ -567,7 +567,6 @@ export default {
             type: "success",
             message: "提交中...",
           });
-
           var formData = new FormData();
           var blob = new Blob([this.code], { type: "text/plain" });
           formData.append("file", blob, "code.v");

@@ -73,6 +73,7 @@ class Treenode {
         var cur = this.root;
         
         for (var i = 0; i < txt.length; i++) {  
+            if (!cur.children) return false;  
             var child = cur.children.find(function (child) {
                 return child.key == txt[i];
             });

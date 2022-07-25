@@ -9,7 +9,7 @@
             <div class="grid-content bg-purple"></div></el-col>
         </el-row>
          
-        <codemirror v-model="codeInner" @change="onCmCodeChange" :options="cmOptions" ref="mymir" 
+        <codemirror v-model="codeInner" @changes="onCmCodeChange" :options="cmOptions" ref="mymir" 
             :style="{'--cmHeight':cmHeight}">
         </codemirror>
         
@@ -67,7 +67,7 @@ export default {
   },
   methods: {
     onCmCodeChange(istance, obj) {
-      var n = istance.length;
+      //console.log(this.message);
       var re = /^[A-Za-z0-9]*$/;
       var cursor = this.$refs.mymir.codemirror.getCursor();
       //console.log(typeof (cursor));
@@ -81,7 +81,7 @@ export default {
       }
       if (re.test(c) && this.$refs.mymir.codemirror.state.focused &&
         !this.$refs.mymir.codemirror.state.completionActive)
-          this.$refs.mymir.codemirror.showHint({ completeSingle: false });
+        this.$refs.mymir.codemirror.showHint({ completeSingle: false });
       this.$emit("codechange", this.codeInner);
     },
     onSliderChange(msg, event) {

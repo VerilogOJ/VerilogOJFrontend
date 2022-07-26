@@ -202,7 +202,7 @@ export default {
           this.score = response.data.total_grade;
           this.total_score = response.data.problem_belong.total_grade;
           this.svg_logic = response.data.results[0].logic_circuit_data;
-          this.svg_mapping = response.data.results[0].circuit_diagram_data
+          this.svg_mapping = response.data.results[0].circuit_diagram_data;
           // console.log(this.svg);
           this.num_testcase = this.results.length;
           this.related_testcases = response.data.problem_belong.testcases;
@@ -221,8 +221,8 @@ export default {
 
           if (this.loggedIn && this.hasPermission) {
             // TODO: support for multiple files
-            // console.log(response.data)
-            this.$axios.get("/files")
+            console.log(response.data)
+            this.$axios.get("/files/"+response.data.submit_file)
               .then((response) => {
 
                 //console.log(response.data);

@@ -12,7 +12,8 @@
         </el-row>
 
         <el-row>
-            {{ newsContent }}
+            <markdownIt :mdSource="newsContent"></markdownIt>
+            <!-- {{ newsContent }} -->
         </el-row>
       </el-col>
     </el-row>
@@ -42,8 +43,10 @@
 </style>
 
 <script>
+import markdownIt from "@/components/utils/markdownIt";
 export default {
   name: "newsdetail",
+  components: { markdownIt },
   methods: {
     prettyDate(time) {
       let date = new Date(

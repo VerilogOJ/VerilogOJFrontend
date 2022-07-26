@@ -47,10 +47,10 @@
               v-clipboard:copy="code"
               v-clipboard:success="onCopy"
               v-clipboard:error="onError"
-              >Copy</el-button
+              >复制</el-button
             >
             <el-button size="mini" @click="downloadFile(submissionid, code)"
-              >Download</el-button
+              >下载代码</el-button
             >
           </el-alert>
 
@@ -89,9 +89,7 @@
               <template slot="title">
                 <el-col :span="12">
                   <div style="margin-left: 15px">
-                    测试用例 {{ index }} （{{
-                      prettyType(related_testcases[index].type)
-                    }}）： {{ result.result }}
+                    测试用例 {{ index }} ： {{ result.result }}
                   </div>
                 </el-col>
                 <el-col :span="12">
@@ -180,12 +178,17 @@ export default {
     },
 
     downloadFile(codeid, content) {
+      // var filename = "temp";
+      // this.$axios.get("/files/")
+      //   .then((response) => {
+      //      console.log(response.data);
+      //   }).catch()
       var aLink = document.createElement("a");
       var blob = new Blob([content], { type: "data:text/plain" });
       var downloadElement = document.createElement("a");
       var href = window.URL.createObjectURL(blob); //创建下载的链接
       downloadElement.href = href;
-      downloadElement.download = codeid + "." + this.curlang; //下载后文件名
+      downloadElement.download = "submit" + codeid + ".v"; //下载后文件名
       document.body.appendChild(downloadElement);
       downloadElement.click(); //点击下载
       document.body.removeChild(downloadElement); //下载完成移除元素
@@ -196,7 +199,7 @@ export default {
       this.$axios
         .get("/submissions/" + this.submissionid + "/")
         .then((response) => {
-          // console.log(response.data);
+          console.log(response.data);
           this.results = response.data.results;
           this.status = response.data.result;
           this.score = response.data.total_grade;

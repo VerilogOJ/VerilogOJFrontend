@@ -23,7 +23,10 @@
               </el-col>
 
               <el-col :span="12">
-                <p class="right-aligned">状态：{{ status }}</p>
+                <p v-if="status=='Accepted'" class="right-aligned">
+                  状态：{{ status }}
+                
+                </p>
                 <p class="right-aligned">提交时间：{{ submitTimePretty }}</p>
               </el-col>
             </el-row>
@@ -60,14 +63,28 @@
             :options="cmOptions"
           ></codemirror>
         </el-row>
-        <el-row> 
-          <p> 逻辑电路图： </p>
-          <p v-html="svg_logic"> </p>
-        </el-row>
-        <el-row> 
-          <p> fpga电路图： </p>
-          <p v-html="svg_mapping"> </p>
-        </el-row>
+        <el-card class="box-card" style="height: 300px">
+          <div slot="header" class="clearfix">
+            <span>
+              <el-dropdown @command="dropdownCommand">
+                <span class="el-dropdown-link">
+                  电路图 <i class="el-icon-arrow-down el-icon--left"></i>
+                </span>
+                <el-dropdown-menu slot="dropdown">
+                  <el-dropdown-item command="0">逻辑</el-dropdown-item>
+                  <el-dropdown-item command="1">CMOS</el-dropdown-item>
+                  <el-dropdown-item command="2">Google 130nm</el-dropdown-item>
+                  <el-dropdown-item command="3">Xilinx FPGA</el-dropdown-item>
+                </el-dropdown-menu>
+              </el-dropdown>
+            </span>
+          </div>
+          <!-- <p> 123</p> -->
+          <!-- <el-image id="sss" ></el-image> -->
+          <!-- <p>{{ current_circuit }} </p> -->
+          
+        </el-card>
+
         <el-row v-if="!loggedIn">
           <el-alert
             type="info"
@@ -90,6 +107,7 @@
                 <el-col :span="12">
                   <div style="margin-left: 15px">
                     测试用例 {{ index }} ： {{ result.result }}
+                    
                   </div>
                 </el-col>
                 <el-col :span="12">
@@ -114,8 +132,9 @@
                     word-wrap: break-word;
                     word-break: normal;
                   "
-                >
+                > 
                   {{ result.log }}
+                  
                 </p>
               </el-card>
             </el-collapse-item>
@@ -148,6 +167,11 @@
 .right-aligned {
   text-align: right;
 }
+
+.el-dropdown {
+  font-family: "Helvetica Neue", Helvetica, "PingFang SC", "Hiragino Sans GB",
+    "Microsoft YaHei", "微软雅黑", Arial, sans-serif;
+}
 </style>
 
 <script>
@@ -160,6 +184,8 @@ require("codemirror/mode/verilog/verilog");
 //import languageselect from "@/components/utils/languageselect";
 import wavedrom from "@/components/utils/wavedrom";
 import { mapState } from "vuex";
+import internal from "stream";
+import Admin from "./admin.vue";
 
 export default {
   name: "submission",
@@ -167,7 +193,8 @@ export default {
     codemirror,
     //languageselect,
     wavedrom,
-  },
+    Admin
+},
   methods: {
     onCopy(e) {
       this.$message.success("复制成功！");
@@ -176,7 +203,10 @@ export default {
     onError(e) {
       this.$message.error("复制失败：" + e);
     },
-
+    dropdownCommand(type) {
+      console.log(type);
+      // this.current_circuit = this.circuit_arr[type];
+    },
     downloadFile(codeid, content) {
       // var filename = "temp";
       // this.$axios.get("/files/")
@@ -199,18 +229,31 @@ export default {
       this.$axios
         .get("/submissions/" + this.submissionid + "/")
         .then((response) => {
-          console.log(response.data);
           this.results = response.data.results;
           this.status = response.data.result;
           this.score = response.data.total_grade;
           this.total_score = response.data.problem_belong.total_grade;
-          this.svg_logic = response.data.results[0].logic_circuit_data;
-          this.svg_mapping = response.data.results[0].circuit_diagram_data;
-          // console.log(this.svg);
+
+          console.log(response.data);
+          // this.logic_circuit_data = response.data.results[0].logic_circuit_data;
+          // this.logic_circuit_possible_error = response.data.results[0].logic_circuit_possible_error;
+          // this.yosys_cmos_result = response.data.results[0].yosys_cmos_result;
+          // this.google_130nm_result = response.data.results[0].google_130nm_result;
+          // this.xilinx_fpga_result = response.data.results[0].xilinx_fpga_result
+          this.circuit_arr = [response.data.results[0].logic_circuit_data,
+                              response.data.results[0].library_mapping_yosys_cmos.circuit_svg,
+                              response.data.results[0].library_mapping_google_130nm.circuit_svg,
+                              response.data.results[0].library_mapping_xilinx_fpga.circuit_svg
+                            ];
+
+         
+         
+          //
+          
           this.num_testcase = this.results.length;
           this.related_testcases = response.data.problem_belong.testcases;
           this.submit_time = new Date(response.data.submit_time);
-          console.log(this.submit_time.toISOString());
+          // console.log(this.submit_time.toISOString());
           this.subm_userid = response.data.user;
 
           let passed = 0;
@@ -221,10 +264,10 @@ export default {
             }
           }
           this.passed_testcase = passed;
-
+          console.log(this.results[0]);
           if (this.loggedIn && this.hasPermission) {
             // TODO: support for multiple files
-            console.log(response.data)
+            // console.log(response.data)
             this.$axios.get("/files/"+response.data.submit_file)
               .then((response) => {
 
@@ -279,8 +322,8 @@ export default {
       submit_time: new Date(),
       related_testcases: [],
       subm_userid: "",
-      svg_logic: "",
-      svg_mapping: "",
+      circuit_arr: [],
+      current_circuit: "",
       autoRefresh: false,
     };
   },

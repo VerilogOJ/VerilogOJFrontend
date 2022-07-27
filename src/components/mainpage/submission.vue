@@ -184,8 +184,6 @@ require("codemirror/mode/verilog/verilog");
 //import languageselect from "@/components/utils/languageselect";
 import wavedrom from "@/components/utils/wavedrom";
 import { mapState } from "vuex";
-import internal from "stream";
-import Admin from "./admin.vue";
 
 export default {
   name: "submission",
@@ -193,7 +191,6 @@ export default {
     codemirror,
     //languageselect,
     wavedrom,
-    Admin
 },
   methods: {
     onCopy(e) {

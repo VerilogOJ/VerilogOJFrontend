@@ -138,9 +138,6 @@
       </el-upload>
     </el-form-item>
 
-    <el-button type="success" @click="addProblem" style="float: right"
-      >添加题目</el-button
-    >
   </el-form>
 </template>
 

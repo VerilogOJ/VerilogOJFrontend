@@ -15,15 +15,7 @@
                        :page-size="pagesize"
                        layout="total, sizes, prev, pager, next, jumper"
                        :total="totalproblem"></el-pagination> -->
-        <el-button
-          round
-          icon="el-icon-document-add"
-          style="float: right"
-          @click="newProblem"
-          size="medium"
-        >
-          添加题目
-        </el-button>
+        
         <!--表格-->
         <el-table
           :data="tableData"

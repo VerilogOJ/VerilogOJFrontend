@@ -27,6 +27,10 @@
                   状态：{{ status }}
                 
                 </p>
+                <p v-else>
+                    
+
+                </p>
                 <p class="right-aligned">提交时间：{{ submitTimePretty }}</p>
               </el-col>
             </el-row>
@@ -63,27 +67,30 @@
             :options="cmOptions"
           ></codemirror>
         </el-row>
-        <el-card class="box-card" style="height: 300px">
-          <div slot="header" class="clearfix">
-            <span>
-              <el-dropdown @command="dropdownCommand">
-                <span class="el-dropdown-link">
-                  电路图 <i class="el-icon-arrow-down el-icon--left"></i>
-                </span>
-                <el-dropdown-menu slot="dropdown">
-                  <el-dropdown-item command="0">逻辑</el-dropdown-item>
-                  <el-dropdown-item command="1">CMOS</el-dropdown-item>
-                  <el-dropdown-item command="2">Google 130nm</el-dropdown-item>
-                  <el-dropdown-item command="3">Xilinx FPGA</el-dropdown-item>
-                </el-dropdown-menu>
-              </el-dropdown>
-            </span>
-          </div>
-          <!-- <p> 123</p> -->
-          <!-- <el-image id="sss" ></el-image> -->
-          <!-- <p>{{ current_circuit }} </p> -->
           
-        </el-card>
+        
+        <el-tabs type="border-card" @tab-click="handleClick">
+            <el-tab-pane :label="info['name']" :name="index.toString()" :key="index"  v-for="(info, index) in circuit_info"></el-tab-pane>
+            <el-row>
+              <el-col :span="12">
+                  <el-image style="height: 200px; width:90%" v-loading="loading" @mouseenter="imgMouseEnter" :error="onloaderror" :fit="tab_fit" :src="current_circuit_img_fullsize" :preview-src-list="[current_circuit_img_fullsize]"  ref="viewer">
+                  </el-image>
+              </el-col>
+              <el-col :span="12">
+                  <p style="white-space: pre-line; overflow-y:auto; height: 200px; font-size:12px">
+                      {{ current_utiliztion}}
+                  </p>
+              </el-col>
+            </el-row>
+            <el-row>
+              <el-col :span="12">
+                  <div align="middle" style="color:#409EFF; font-size:12px">
+                    点击图片以放大
+                  </div>
+              </el-col>
+              <el-col :span="12"></el-col>
+            </el-row>
+        </el-tabs>
 
         <el-row v-if="!loggedIn">
           <el-alert
@@ -120,7 +127,7 @@
                 <h3>波形</h3>
                 <wavedrom
                   :waveId="String(10 + index)"
-                  :parentText="result.app_data"
+                  :parentText="result.wave_json"
                   errorMessage="Sorry, no waveform available."
                 ></wavedrom>
                 <h3>日志</h3>
@@ -131,6 +138,7 @@
                     margin-left: 15px;
                     word-wrap: break-word;
                     word-break: normal;
+                    white-space: pre-line;
                   "
                 > 
                   {{ result.log }}
@@ -160,6 +168,8 @@
     "Microsoft YaHei", "微软雅黑", Arial, sans-serif;
 }
 
+
+
 .left-aligned {
   text-align: left;
 }
@@ -168,11 +178,14 @@
   text-align: right;
 }
 
-.el-dropdown {
+.el-tabs {
   font-family: "Helvetica Neue", Helvetica, "PingFang SC", "Hiragino Sans GB",
     "Microsoft YaHei", "微软雅黑", Arial, sans-serif;
+  height: 330px;
 }
 </style>
+
+
 
 <script>
 import moment from "moment";
@@ -184,6 +197,8 @@ require("codemirror/mode/verilog/verilog");
 //import languageselect from "@/components/utils/languageselect";
 import wavedrom from "@/components/utils/wavedrom";
 import { mapState } from "vuex";
+import { ignoreCase } from "uc.micro/categories/P/regex";
+import image from "markdown-it/lib/rules_inline/image";
 
 export default {
   name: "submission",
@@ -191,18 +206,59 @@ export default {
     codemirror,
     //languageselect,
     wavedrom,
-},
+  },
+  watch: {
+    
+  },
   methods: {
     onCopy(e) {
       this.$message.success("复制成功！");
     },
     // 复制失败
+    imgMouseEnter(e) {
+      
+    },
+    onloaderror(e) {
+      console.log('123');
+    },
     onError(e) {
       this.$message.error("复制失败：" + e);
     },
-    dropdownCommand(type) {
-      console.log(type);
-      // this.current_circuit = this.circuit_arr[type];
+    imgmodify(type) {
+      this.image.src = 'data:image/svg+xml;base64,' + window.btoa(unescape(encodeURIComponent(this.circuit_info[type]['svg'])));
+      var that = this;
+      this.loading = true;
+
+      
+      this.image.onload = function () {
+        that.canvas_.height = that.image.height;
+        that.canvas_.width = that.image.width;
+
+        var scale = 1;
+        if (that.canvas_.height > 200)
+          scale = 200 / that.canvas_.height;
+
+        var ctx = that.canvas_.getContext("2d");
+        var image = that.image;
+        ctx.clearRect(0, 0, that.canvas_.width, that.canvas_.height);
+        ctx.drawImage(image, 0, 0, that.image.width * scale, that.image.height * scale);
+        that.current_circuit_img = that.canvas_.toDataURL('image/jpg');
+        ctx.clearRect(0, 0, that.canvas_.width, that.canvas_.height);
+        ctx.drawImage(image, 0, 0, that.image.width, that.image.height);
+        that.current_circuit_img_fullsize = that.canvas_.toDataURL('image/jpg');
+        setTimeout(function () { that.$refs.viewer.loadImage(); }, 500);
+        
+        that.loading = false;
+      };
+      
+      //img.children[0].src = this.current_circuit_img;
+      //img.children[1].src = this.current_circuit_img;
+      //console.log(this.$refs);
+      //console.log('!!!!!!!!!!!!');
+    }, 
+    handleClick(tab, e) {
+      this.imgmodify(tab.name);
+      this.current_utiliztion = this.circuit_info[tab.name]['report'];
     },
     downloadFile(codeid, content) {
       // var filename = "temp";
@@ -222,6 +278,7 @@ export default {
       window.URL.revokeObjectURL(href); //释放掉blob对象
     },
 
+
     updateStatus() {
       this.$axios
         .get("/submissions/" + this.submissionid + "/")
@@ -231,22 +288,21 @@ export default {
           this.score = response.data.total_grade;
           this.total_score = response.data.problem_belong.total_grade;
 
-          console.log(response.data);
+          
           // this.logic_circuit_data = response.data.results[0].logic_circuit_data;
           // this.logic_circuit_possible_error = response.data.results[0].logic_circuit_possible_error;
           // this.yosys_cmos_result = response.data.results[0].yosys_cmos_result;
           // this.google_130nm_result = response.data.results[0].google_130nm_result;
           // this.xilinx_fpga_result = response.data.results[0].xilinx_fpga_result
-          this.circuit_arr = [response.data.results[0].logic_circuit_data,
-                              response.data.results[0].library_mapping_yosys_cmos.circuit_svg,
-                              response.data.results[0].library_mapping_google_130nm.circuit_svg,
-                              response.data.results[0].library_mapping_xilinx_fpga.circuit_svg
-                            ];
-
-         
-         
-          //
-          
+          console.log(response.data.results[0]);
+          var res = response.data.results[0];
+          this.circuit_info.push({ 'name': '逻辑', 'svg': res.logic_circuit_data, 'report':"" })
+          this.circuit_info.push({ 'name': 'Yosys CMOS', 'svg': res.library_mapping_yosys_cmos.circuit_svg, 'report': res.library_mapping_yosys_cmos.resources_report })
+          this.circuit_info.push({ 'name': 'Google 130nm', 'svg': res.library_mapping_google_130nm.circuit_svg, 'report':res.library_mapping_google_130nm.resources_report })
+          this.circuit_info.push({ 'name': 'Xilinx FPGA', 'svg': res.library_mapping_xilinx_fpga.circuit_svg, 'report':res.library_mapping_xilinx_fpga.resources_report })
+       
+          this.imgmodify(0);
+        
           this.num_testcase = this.results.length;
           this.related_testcases = response.data.problem_belong.testcases;
           this.submit_time = new Date(response.data.submit_time);
@@ -261,7 +317,6 @@ export default {
             }
           }
           this.passed_testcase = passed;
-          console.log(this.results[0]);
           if (this.loggedIn && this.hasPermission) {
             // TODO: support for multiple files
             // console.log(response.data)
@@ -308,7 +363,12 @@ export default {
         lineWrapping: true,
       },
       code: "",
-
+      canvas_: "",
+      tab_fit: "scale-down",
+      loading: true,
+      image: null, 
+      canvas: null,
+      current_utiliztion: "",
       submissionid: null,
       status: "",
       results: [],
@@ -320,7 +380,8 @@ export default {
       related_testcases: [],
       subm_userid: "",
       circuit_arr: [],
-      current_circuit: "",
+      current_circuit_img_fullsize: "",
+      circuit_info: [],
       autoRefresh: false,
     };
   },
@@ -338,11 +399,17 @@ export default {
       return this.subm_userid == this.userID || this.isSuperUser;
     },
   },
+  mounted() {
+    
+  },
   destroyed() {},
   created() {
     // console.log(this.needRefresh);
     this.submissionid = this.$route.params.submissionid;
     this.updateStatus();
+    this.canvas_ = document.createElement("canvas");
+    this.image = new Image();
+    
   },
   beforeDestroy() {
     if (this.autoRefresh) {

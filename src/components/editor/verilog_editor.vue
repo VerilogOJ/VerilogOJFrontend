@@ -1,18 +1,25 @@
 <template>
     <div>
-        <el-row :gutter="20">
-            <el-col :span="6" :offset="15">
-                <div class="block">
-                    <span class="demonstration">编辑器高度</span>
-                    <el-slider v-model="editorHeight" :min="100" :max="700" :show-tooltip="false" @change="onSliderChange"> </el-slider>
-                 </div>
-            <div class="grid-content bg-purple"></div></el-col>
-        </el-row>
-         
         <codemirror v-model="codeInner" @changes="onCmCodeChange" :options="cmOptions" ref="mymir" 
             :style="{'--cmHeight':cmHeight}">
         </codemirror>
-        
+        <br>
+        <el-popover
+          placement="right"
+          width="400"
+          trigger="click">
+              <span class="demonstration">高度</span>
+              <el-slider v-model="editorHeight" :min="100" :max="700" :show-tooltip="false" @change="onSliderChange"> </el-slider>
+          <el-button slot="reference">编辑器设置</el-button>
+        </el-popover>
+        <el-row :gutter="20">
+            <el-col :span="6" :offset="15">
+                <div class="block">
+                  
+                    
+                 </div>
+            <div class="grid-content bg-purple"></div></el-col>
+        </el-row>
     </div>
 </template>
 

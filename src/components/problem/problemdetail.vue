@@ -71,13 +71,17 @@
                 >输入格式</el-row
               >
               <el-row :gutter="18" class="problem-descriptions">
-                <div class="problem-descriptions">{{ input }}</div>
+                <div class="problem-descriptions">
+                    <markdownIt :mdSource="input"></markdownIt>
+                </div>
               </el-row>
               <el-row :gutter="18" class="problem-description-title"
                 >输出格式</el-row
               >
               <el-row :gutter="18" class="problem-descriptions">
-                <div class="problem-descriptions">{{ output }}</div>
+                <div class="problem-descriptions">
+                    <markdownIt :mdSource="output"></markdownIt>
+                </div>
               </el-row>
 
               <!-- 这里放样例波形图 -->

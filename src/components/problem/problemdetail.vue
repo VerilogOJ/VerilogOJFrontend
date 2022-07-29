@@ -574,12 +574,14 @@ export default {
         .then((response) => {
           const fileid = response.data.id;
           // 再实际提交
+          console.log(response.data);
           return this.$axios.post("/submit", {
             problem: this.id,
             submit_file: fileid,
           });
         })
         .then((response) => {
+          
           this.$router.push({
             name: "submission",
             params: { submissionid: response.data.id },

@@ -68,9 +68,22 @@
           ></codemirror>
         </el-row>
           
-        
+        <el-divider></el-divider>
+
         <el-tabs type="border-card" @tab-click="handleClick">
             <el-tab-pane :label="info['name']" :name="index.toString()" :key="index"  v-for="(info, index) in circuit_info"></el-tab-pane>
+            <el-row>
+              <el-col :span="12">
+                  <div align="middle" style="font-size: 14px">电路图 </div>
+                  
+              </el-col>
+              <el-col :span="12">
+                  <div align="middle" v-if="current_select!=0" style="height: 20px; font-size:14px">
+                       资源占用情况
+                  </div>
+              </el-col>
+            </el-row>
+            
             <el-row>
               <el-col :span="12">
                   <el-image style="height: 200px; width:90%" v-loading="loading" @mouseenter="imgMouseEnter" :error="onloaderror" :fit="tab_fit" :src="current_circuit_img_fullsize" :preview-src-list="[current_circuit_img_fullsize]"  ref="viewer">
@@ -91,6 +104,8 @@
               <el-col :span="12"></el-col>
             </el-row>
         </el-tabs>
+
+        <el-divider></el-divider>
 
         <el-row v-if="!loggedIn">
           <el-alert
@@ -181,7 +196,7 @@
 .el-tabs {
   font-family: "Helvetica Neue", Helvetica, "PingFang SC", "Hiragino Sans GB",
     "Microsoft YaHei", "微软雅黑", Arial, sans-serif;
-  height: 330px;
+  height: 380px;
 }
 </style>
 
@@ -240,10 +255,9 @@ export default {
 
         var ctx = that.canvas_.getContext("2d");
         var image = that.image;
+        ctx.fillStyle = "white";
         ctx.clearRect(0, 0, that.canvas_.width, that.canvas_.height);
-        ctx.drawImage(image, 0, 0, that.image.width * scale, that.image.height * scale);
-        that.current_circuit_img = that.canvas_.toDataURL('image/jpg');
-        ctx.clearRect(0, 0, that.canvas_.width, that.canvas_.height);
+        ctx.fillRect(0, 0, that.canvas_.width, that.canvas_.height);
         ctx.drawImage(image, 0, 0, that.image.width, that.image.height);
         that.current_circuit_img_fullsize = that.canvas_.toDataURL('image/jpg');
         setTimeout(function () { that.$refs.viewer.loadImage(); }, 500);
@@ -257,6 +271,7 @@ export default {
       //console.log('!!!!!!!!!!!!');
     }, 
     handleClick(tab, e) {
+      this.current_select = tab.name;
       this.imgmodify(tab.name);
       this.current_utiliztion = this.circuit_info[tab.name]['report'];
     },
@@ -382,6 +397,7 @@ export default {
       circuit_arr: [],
       current_circuit_img_fullsize: "",
       circuit_info: [],
+      current_select: 0,
       autoRefresh: false,
     };
   },

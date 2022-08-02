@@ -208,7 +208,7 @@ export default {
     };
   },
   created() {
-    this.currentpage = this.$route.params.pageid;
+    this.currentpage = Number(this.$route.params.pageid);
   },
   computed: {
     ...mapState(["loggedIn", "userID", "username", "isSuperUser"]),
@@ -227,7 +227,7 @@ export default {
     },
     // 重新获取题目列表信息
     refresh() {
-      this.currentpage = this.$route.params.pageid;
+      this.currentpage = Number(this.$route.params.pageid);
 
       this.$axios
         .get(

@@ -23,88 +23,40 @@
               </el-col>
 
               <el-col :span="12">
-                <p v-if="status=='Accepted'" class="right-aligned">
-                  状态：{{ status }}
-                
-                </p>
-                <p v-else>
+                <!-- <p v-if="status=='Accepted'" class="right-aligned"> -->
+                <div class="right-aligned">
+                  <el-tag 
+                    v-if="status=='Accepted'"
+                    size="medium"
+                    type="success"
+                    disable-transitions
                     
+                    hit
+                  >{{ status }}
+                    
+                  </el-tag>
+                  <el-tag 
+                    v-else
+                    size="medium"
+                    type="warning"
+                    disable-transitions
+                    
+                    hit
+                  >{{ status }}
+                    
+                  </el-tag>
+                </div>
 
-                </p>
+                <!-- </p> -->
+        
                 <p class="right-aligned">提交时间：{{ submitTimePretty }}</p>
               </el-col>
             </el-row>
           </el-card>
         </el-row>
-        <el-row v-if="!loggedIn">
-          <el-alert type="info" show-icon title="登录以查看代码！"></el-alert>
-        </el-row>
-        <el-row v-else-if="!hasPermission">
-          <el-alert
-            type="warning"
-            show-icon
-            title="您只能查看和下载自己的代码！"
-          ></el-alert>
-        </el-row>
-        <el-row v-else>
-          <!-- 代码显示 -->
-          <el-alert title="Code：" type="info" :closable="false">
-            <el-button
-              size="mini"
-              v-clipboard:copy="code"
-              v-clipboard:success="onCopy"
-              v-clipboard:error="onError"
-              >复制</el-button
-            >
-            <el-button size="mini" @click="downloadFile(submissionid, code)"
-              >下载代码</el-button
-            >
-          </el-alert>
-
-          <codemirror
-            id="mycode"
-            v-model="code"
-            :options="cmOptions"
-          ></codemirror>
-        </el-row>
+        
           
         <el-divider></el-divider>
-
-        <el-tabs v-if="status[0]=='A'" type="border-card" @tab-click="handleClick">
-            <el-tab-pane :label="info['name']" :name="index.toString()" :key="index"  v-for="(info, index) in circuit_info"></el-tab-pane>
-            <el-row>
-              <el-col :span="12">
-                  <div align="middle" style="font-size: 14px">电路图 </div>
-                  
-              </el-col>
-              <el-col :span="12">
-                  <div align="middle" v-if="current_select!=0" style="height: 20px; font-size:14px">
-                       资源占用情况
-                  </div>
-              </el-col>
-            </el-row>
-            
-            <el-row>
-              <el-col :span="12">
-                  <el-image style="height: 200px; width:90%" v-loading="loading" @mouseenter="imgMouseEnter" :error="onloaderror" :fit="tab_fit" :src="current_circuit_img_fullsize" :preview-src-list="[current_circuit_img_fullsize]"  ref="viewer">
-                  </el-image>
-              </el-col>
-              <el-col :span="12">
-                  <p style="white-space: pre-line; overflow-y:auto; height: 200px; font-size:12px">
-                      {{ current_utiliztion}}
-                  </p>
-              </el-col>
-            </el-row>
-            <el-row>
-              <el-col :span="12">
-                  <div align="middle" style="color:#409EFF; font-size:12px">
-                    点击图片以放大
-                  </div>
-              </el-col>
-              <el-col :span="12"></el-col>
-            </el-row>
-        </el-tabs>
-
         <el-row v-if="!loggedIn">
           <el-alert
             type="info"
@@ -160,6 +112,84 @@
               </el-card>
             </el-collapse-item>
           </el-collapse>
+        </el-row>
+        <el-tabs v-if="status[0]=='A'" v-model="current_select" type="border-card" @tab-click="handleClick">
+            <el-tab-pane :label="info" :name="info" :key="index"  v-for="(info, index) in circuit_item.slice(0,1)"></el-tab-pane>
+            <el-tab-pane :label="'静态时序分析'" :name="'STA'" :key="1"></el-tab-pane>
+            <el-tab-pane :label="info" :name="info" :key="index+2"  v-for="(info, index) in circuit_item.slice(1)"></el-tab-pane>
+            
+            <div v-if="current_select != 'STA'">
+              <el-row>
+                <el-col :span="12">
+                    <div align="middle" style="font-size: 14px">电路图 </div>
+                    
+                </el-col>
+                <el-col :span="12">
+                    <div align="middle" v-if="current_select!=0" style="height: 20px; font-size:14px">
+                        资源占用情况
+                    </div>
+                </el-col>
+              </el-row>
+              
+              <el-row>
+                <el-col :span="12">
+                    <el-image style="height: 200px; width:90%" v-loading="loading" @mouseenter="imgMouseEnter" :error="onloaderror" :fit="tab_fit" :src="current_circuit_img_fullsize" :preview-src-list="[current_circuit_img_fullsize]"  ref="viewer">
+                    </el-image>
+                </el-col>
+                <el-col :span="12">
+                    <p style="white-space: pre-line; overflow-y:auto; height: 200px; font-size:12px">
+                        {{ current_utiliztion}}
+                    </p>
+                </el-col>
+              </el-row>
+              <el-row>
+                <el-col :span="12">
+                    <div align="middle" style="color:#409EFF; font-size:12px">
+                      点击图片以放大
+                    </div>
+                </el-col>
+                <el-col :span="12"></el-col>
+              </el-row>
+            </div>
+            <div v-else>
+                <!-- sta_report -->
+              <p style="white-space: pre-line; overflow-y:auto; height: 200px; font-size:12px">
+                        {{sta_report}}
+              </p>
+            </div>
+        </el-tabs>
+
+        <el-divider></el-divider><br>
+        <el-row v-if="!loggedIn">
+          <el-alert type="info" show-icon title="登录以查看代码！"></el-alert>
+        </el-row>
+        <el-row v-else-if="!hasPermission">
+          <el-alert
+            type="warning"
+            show-icon
+            title="您只能查看和下载自己的代码！"
+          ></el-alert>
+        </el-row>
+        <el-row v-else>
+          <!-- 代码显示 -->
+          <el-alert title="Code：" type="info" :closable="false">
+            <el-button
+              size="mini"
+              v-clipboard:copy="code"
+              v-clipboard:success="onCopy"
+              v-clipboard:error="onError"
+              >复制</el-button
+            >
+            <el-button size="mini" @click="downloadFile(submissionid, code)"
+              >下载代码</el-button
+            >
+          </el-alert>
+
+          <codemirror
+            id="mycode"
+            v-model="code"
+            :options="cmOptions"
+          ></codemirror>
         </el-row>
         
 
@@ -270,8 +300,11 @@ export default {
     }, 
     handleClick(tab, e) {
       this.current_select = tab.name;
-      this.imgmodify(tab.name);
-      this.current_utiliztion = this.circuit_info[tab.name]['report'];
+      if (tab.name != 'STA') {
+        console.log(this.current_select);
+        this.imgmodify(tab.name);
+        this.current_utiliztion = this.circuit_info[tab.name]['report'];
+      }
     },
     downloadFile(codeid, content) {
       // var filename = "temp";
@@ -315,13 +348,20 @@ export default {
 
 
           var res = response.data.results[0];
-
+      
           if (this.status[0] == 'A') {
-            this.circuit_info.push({ 'name': '逻辑', 'svg': res.logic_circuit_data, 'report': "" })
-            this.circuit_info.push({ 'name': 'Yosys CMOS', 'svg': res.library_mapping_yosys_cmos.circuit_svg, 'report': res.library_mapping_yosys_cmos.resources_report })
-            this.circuit_info.push({ 'name': 'Google 130nm', 'svg': res.library_mapping_google_130nm.circuit_svg, 'report': res.library_mapping_google_130nm.resources_report })
-            this.circuit_info.push({ 'name': 'Xilinx FPGA', 'svg': res.library_mapping_xilinx_fpga.circuit_svg, 'report': res.library_mapping_xilinx_fpga.resources_report })
-            this.imgmodify(0);
+            this.circuit_info['Google130nm'] = ({
+              'name': 'Google 130nm',
+              'report': res.google_alldata.google_resources_report,
+              'svg': res.google_alldata.google_130nm_svg,
+            })
+            this.circuit_info['Logic'] = { 'name': '逻辑', 'svg': res.logic_circuit_data, 'report': "" }
+            this.circuit_info['CMOS'] = { 'name': 'Yosys CMOS', 'svg': res.library_mapping_yosys_cmos.circuit_svg, 'report': res.library_mapping_yosys_cmos.resources_report }
+
+            this.circuit_info['Xilinx'] = { 'name': 'Xilinx FPGA', 'svg': res.library_mapping_xilinx_fpga.circuit_svg, 'report': res.library_mapping_xilinx_fpga.resources_report }
+            this.imgmodify('Google130nm');
+
+            this.sta_report = res.google_alldata.google_sta_report;
           }
           
 
@@ -397,8 +437,9 @@ export default {
       subm_userid: "",
       circuit_arr: [],
       current_circuit_img_fullsize: "",
-      circuit_info: [],
-      current_select: 0,
+      circuit_info: {},
+      circuit_item: ['Google130nm', 'Logic', 'CMOS', 'Xilinx'],
+      current_select: 'Google130nm',
       autoRefresh: false,
     };
   },

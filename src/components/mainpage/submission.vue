@@ -70,7 +70,7 @@
           
         <el-divider></el-divider>
 
-        <el-tabs type="border-card" @tab-click="handleClick">
+        <el-tabs v-if="status[0]=='A'" type="border-card" @tab-click="handleClick">
             <el-tab-pane :label="info['name']" :name="index.toString()" :key="index"  v-for="(info, index) in circuit_info"></el-tab-pane>
             <el-row>
               <el-col :span="12">
@@ -104,8 +104,6 @@
               <el-col :span="12"></el-col>
             </el-row>
         </el-tabs>
-
-        <el-divider></el-divider>
 
         <el-row v-if="!loggedIn">
           <el-alert
@@ -298,31 +296,34 @@ export default {
       this.$axios
         .get("/submissions/" + this.submissionid + "/")
         .then((response) => {
+          console.log(response.data);
           this.results = response.data.results;
           this.status = response.data.result;
           this.score = response.data.total_grade;
           this.total_score = response.data.problem_belong.total_grade;
-
+          this.num_testcase = this.results.length;
+          this.related_testcases = response.data.problem_belong.testcases;
+          this.submit_time = new Date(response.data.submit_time);
+          // console.log(this.submit_time.toISOString());
+          this.subm_userid = response.data.user;
           
           // this.logic_circuit_data = response.data.results[0].logic_circuit_data;
           // this.logic_circuit_possible_error = response.data.results[0].logic_circuit_possible_error;
           // this.yosys_cmos_result = response.data.results[0].yosys_cmos_result;
           // this.google_130nm_result = response.data.results[0].google_130nm_result;
           // this.xilinx_fpga_result = response.data.results[0].xilinx_fpga_result
-          console.log(response.data.results[0]);
+
+
           var res = response.data.results[0];
-          this.circuit_info.push({ 'name': '逻辑', 'svg': res.logic_circuit_data, 'report':"" })
-          this.circuit_info.push({ 'name': 'Yosys CMOS', 'svg': res.library_mapping_yosys_cmos.circuit_svg, 'report': res.library_mapping_yosys_cmos.resources_report })
-          this.circuit_info.push({ 'name': 'Google 130nm', 'svg': res.library_mapping_google_130nm.circuit_svg, 'report':res.library_mapping_google_130nm.resources_report })
-          this.circuit_info.push({ 'name': 'Xilinx FPGA', 'svg': res.library_mapping_xilinx_fpga.circuit_svg, 'report':res.library_mapping_xilinx_fpga.resources_report })
-       
-          this.imgmodify(0);
-        
-          this.num_testcase = this.results.length;
-          this.related_testcases = response.data.problem_belong.testcases;
-          this.submit_time = new Date(response.data.submit_time);
-          // console.log(this.submit_time.toISOString());
-          this.subm_userid = response.data.user;
+
+          if (this.status[0] == 'A') {
+            this.circuit_info.push({ 'name': '逻辑', 'svg': res.logic_circuit_data, 'report': "" })
+            this.circuit_info.push({ 'name': 'Yosys CMOS', 'svg': res.library_mapping_yosys_cmos.circuit_svg, 'report': res.library_mapping_yosys_cmos.resources_report })
+            this.circuit_info.push({ 'name': 'Google 130nm', 'svg': res.library_mapping_google_130nm.circuit_svg, 'report': res.library_mapping_google_130nm.resources_report })
+            this.circuit_info.push({ 'name': 'Xilinx FPGA', 'svg': res.library_mapping_xilinx_fpga.circuit_svg, 'report': res.library_mapping_xilinx_fpga.resources_report })
+            this.imgmodify(0);
+          }
+          
 
           let passed = 0;
           for (let i = 0; i < this.results.length; i++) {
